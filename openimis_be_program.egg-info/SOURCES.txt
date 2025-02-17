@@ -20,5 +20,4 @@ program/views.py
 program/migrations/0001_initial.py
 program/migrations/0002_program_user.py
 program/migrations/0003_auto_20230315_0851.py
-program/migrations/0004_program_code.py
 program/migrations/__init__.py
