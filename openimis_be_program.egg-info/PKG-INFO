@@ -6,7 +6,6 @@ Home-page: https://openimis.org/
 Author: Maxime NGOE
 Author-email: m.ngoe@y-note.cm
 License: GNU AGPL v3
-Platform: UNKNOWN
 Classifier: Environment :: Web Environment
 Classifier: Framework :: Django
 Classifier: Framework :: Django :: 2.1
@@ -17,6 +16,3 @@ Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3.6
 Classifier: Programming Language :: Python :: 3.7
 License-File: LICENSE.md
-
-UNKNOWN
-
