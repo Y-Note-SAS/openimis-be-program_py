@@ -14,7 +14,6 @@ program/gql_mutations.py
 program/models.py
 program/schema.py
 program/serialize.py
-program/test_helpers.py
 program/tests.py
 program/urls.py
 program/views.py
