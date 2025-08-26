@@ -1,5 +1,6 @@
 from program.models import Program
 from django.utils import timezone
+from core import datetime
 
 class DummyUser:
     def __init__(self):
@@ -15,7 +16,7 @@ def create_test_program(code="PRG001", name="Test Program", users=None, custom_p
     program = Program.objects.create(
         code=code,
         nameProgram=name,
-        validityDateFrom=custom_props.get("validityDateFrom", timezone.now()),
+        validityDateFrom=custom_props.get("validityDateFrom", datetime.datetime(2019, 1, 1)),
         **custom_props
     )
 
