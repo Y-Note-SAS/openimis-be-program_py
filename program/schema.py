@@ -51,8 +51,8 @@ class Query(graphene.ObjectType):
             insuree = insuree_models.Insuree.objects.get(id=insuree_id)
             family_id = insuree.family_id
             policies = policy_models.Policy.objects.filter(
-                family_id=family_id).filter(expiry_date__gte=visit_date_from).filter(
-                    start_date__lte=visit_date_from).filter(status=2)
+                family_id=family_id).filter(
+                    start_date__lte=visit_date_from).filter(status__in=([2,8])) 
             program_products_ids = []
             products_programs = []
             for policy in policies:
