@@ -4,7 +4,17 @@ from core.schema import OpenIMISMutation
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
+from program.apps import ProgramConfig
 from program.models import Program
+
+
+def _check_rights(user, perms, action):
+    """Refuse an anonymous user, or a user without `perms`. An empty right list
+    refuses everyone: a program mutation is never open by default."""
+    if user is None or not getattr(user, "is_authenticated", False) \
+            or not perms or not user.has_perms(perms):
+        return [{'message': _("unauthorized"), 'detail': _("Not allowed to %s a program") % action}]
+    return None
 
 class ProgramInputType(OpenIMISMutation.Input):
     idProgram = graphene.String(required=False, read_only=True)
@@ -40,7 +50,11 @@ class CreateProgramMutation(OpenIMISMutation):
 
     @classmethod
     def async_mutate(cls, user, **data):
+        denied = _check_rights(user, ProgramConfig.gql_mutation_programs_add_perms, "create")
+        if denied:
+            return denied
         try:
+            data.pop('id', None)  # create never targets an existing program
             update_or_create_program(data, user)
             return None
         except Exception as exc:
@@ -55,7 +69,7 @@ class UpdateProgramMutation(OpenIMISMutation):
     """
     Update a program
     """
-    _mutation_module = "product"
+    _mutation_module = "program"
     _mutation_class = "UpdateProgramMutation"
 
     class Input(ProgramInputType):
@@ -63,6 +77,9 @@ class UpdateProgramMutation(OpenIMISMutation):
 
     @classmethod
     def async_mutate(cls, user, **data):
+        denied = _check_rights(user, ProgramConfig.gql_mutation_programs_edit_perms, "update")
+        if denied:
+            return denied
         try:
             update_or_create_program(data, user)
             return None
@@ -82,11 +99,14 @@ class DeleteProgramMutation(OpenIMISMutation):
     class Input(ProgramInputType):
         pass
 
-    _mutation_module = "product"
+    _mutation_module = "program"
     _mutation_class = "DeleteProgramMutation"
 
     @classmethod
     def async_mutate(cls, user, **data):
+        denied = _check_rights(user, ProgramConfig.gql_mutation_programs_delete_perms, "delete")
+        if denied:
+            return denied
         try:
             yesterday = datetime.datetime.now() - datetimedelta(days=1)
             if "nameProgram" in data:
